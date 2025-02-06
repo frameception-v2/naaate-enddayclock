@@ -22,19 +22,33 @@ import { createStore } from "mipd";
 import { Label } from "~/components/ui/label";
 import { PROJECT_TITLE } from "~/lib/constants";
 
-function ExampleCard() {
+function formatCountdown(diff: number) {
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Welcome to the Frame Template</CardTitle>
-        <CardDescription>
-          This is an example card that you can customize or remove
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Label>Place content in a Card here.</Label>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col items-center justify-center space-y-2">
+      <div className="text-4xl font-bold text-center">
+        <div className="flex flex-col space-y-1">
+          <span className="text-6xl">{days}</span>
+          <span className="text-sm font-normal">DAYS</span>
+        </div>
+        <div className="flex flex-col space-y-1">
+          <span className="text-6xl">{hours.toString().padStart(2, '0')}</span>
+          <span className="text-sm font-normal">HOURS</span>
+        </div>
+        <div className="flex flex-col space-y-1">
+          <span className="text-6xl">{minutes.toString().padStart(2, '0')}</span>
+          <span className="text-sm font-normal">MINUTES</span>
+        </div>
+        <div className="flex flex-col space-y-1">
+          <span className="text-6xl">{seconds.toString().padStart(2, '0')}</span>
+          <span className="text-sm font-normal">SECONDS</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -140,7 +154,28 @@ export default function Frame() {
         <h1 className="text-2xl font-bold text-center mb-4 text-gray-700 dark:text-gray-300">
           {PROJECT_TITLE}
         </h1>
-        <ExampleCard />
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center">Time until February 26th ends</CardTitle>
+            <CardDescription className="text-center">
+              {TARGET_DATE.toLocaleDateString('en-US', { 
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric' 
+              })}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col items-center justify-center">
+              {formatCountdown(TARGET_DATE.getTime() - Date.now())}
+              <Label className="mt-4 text-sm text-muted-foreground">
+                {Date.now() < TARGET_DATE.getTime() ? 
+                  "Counting down..." : 
+                  "Time's up! 🎉"}
+              </Label>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
